@@ -1,4 +1,4 @@
-package graph;
+package com.kruskal.graph;
 
 public class Edge {
     private final Node firstNode;

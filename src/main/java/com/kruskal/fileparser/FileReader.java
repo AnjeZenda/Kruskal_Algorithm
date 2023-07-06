@@ -1,3 +1,7 @@
+package com.kruskal.fileparser;
+
+import com.kruskal.graph.GraphBuilder;
+
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.util.Scanner;

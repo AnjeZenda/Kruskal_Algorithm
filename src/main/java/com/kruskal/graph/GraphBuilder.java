@@ -1,4 +1,7 @@
+package com.kruskal.graph;
+
 import java.util.List;
+
 
 public class GraphBuilder {
 
