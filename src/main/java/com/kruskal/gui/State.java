@@ -1,4 +1,4 @@
-package com.kruskal.kruskalalgorithm;
+package com.kruskal.gui;
 
 public enum State {
     ADDNODE,
