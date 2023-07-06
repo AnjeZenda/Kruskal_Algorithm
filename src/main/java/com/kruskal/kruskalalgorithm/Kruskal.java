@@ -1,12 +1,12 @@
-package kraskalalgorithm;
+package com.kruskal.kruskalalgorithm;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import graph.EdgeData;
-import graph.Graph;
+import com.kruskal.graph.EdgeData;
+import com.kruskal.graph.Graph;
 
 public class Kruskal {
     private final List<EdgeData> edges;

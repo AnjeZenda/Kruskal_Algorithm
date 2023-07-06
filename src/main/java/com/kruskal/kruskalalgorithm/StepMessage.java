@@ -1,5 +1,5 @@
-package kraskalalgorithm;
-import graph.EdgeData;
+package com.kruskal.kruskalalgorithm;
+import com.kruskal.graph.EdgeData;
 
 public class StepMessage {
     private final StepMessageType messageType;
