@@ -1,4 +1,4 @@
-package com.kruskal.kruskalalgorithm;
+package com.kruskal.gui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

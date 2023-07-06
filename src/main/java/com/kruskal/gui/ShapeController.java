@@ -1,8 +1,6 @@
-package com.kruskal.kruskalalgorithm;
+package com.kruskal.gui;
 
-import com.kruskal.shapeview.NodeView;
 import com.kruskal.shapeview.ShapeContainer;
-import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
