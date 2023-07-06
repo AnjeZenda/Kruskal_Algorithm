@@ -1,7 +1,12 @@
+package com.kruskal.fileparser;
+
+import com.kruskal.graph.EdgeData;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.List;
+
 
 public class FileWriter {
 
