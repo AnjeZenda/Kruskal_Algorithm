@@ -1,5 +1,6 @@
 package com.kruskal.gui;
 
+import com.kruskal.controlstructures.Mediator;
 import com.kruskal.shapeview.EdgeView;
 import com.kruskal.shapeview.NodeView;
 import javafx.fxml.FXML;
@@ -159,7 +160,7 @@ public class ActionController {
         });
     }
 
-    protected void setMediator(Mediator mediator) {
+    public void setMediator(Mediator mediator) {
         this.mediator = mediator;
     }
 
