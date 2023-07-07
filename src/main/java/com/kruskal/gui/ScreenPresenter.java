@@ -4,22 +4,24 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 
 import java.io.IOException;
 
-public class Main extends Application {
+public class ScreenPresenter extends Application {
     private Mediator mediator;
-    private Controller controller;
+    private ActionController actionController;
     private ShapeController shapeController;
     @Override
     public void start(Stage stage) throws IOException
     {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("application-view.fxml"));
-        Parent root = fxmlLoader.load();
-        controller = fxmlLoader.getController();
-        shapeController = new ShapeController();
+        FXMLLoader fxmlLoader = new FXMLLoader(ScreenPresenter.class.getResource("application-view.fxml"));
+        AnchorPane root = fxmlLoader.load();
+        actionController = fxmlLoader.getController();
+        shapeController = new ShapeController((Pane)root.getChildren().get(1));
         connectMediator();
         Scene scene = new Scene(root);
         stage.setTitle("Kruskal's algorithm");
@@ -29,9 +31,9 @@ public class Main extends Application {
 
     private void connectMediator() {
         mediator = new Mediator();
-        mediator.setController(controller);
+        mediator.setController(actionController);
         mediator.setGraphEditor(shapeController);
-        controller.setMediator(mediator);
+        actionController.setMediator(mediator);
     }
     public static void main(String[] args) {
         launch();

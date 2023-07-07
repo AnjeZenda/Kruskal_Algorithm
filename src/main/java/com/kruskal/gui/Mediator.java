@@ -4,11 +4,11 @@ package com.kruskal.gui;
 import javafx.scene.layout.Pane;
 
 public class Mediator {
-    private Controller controller;
+    private ActionController controller;
     private ShapeController shapeController;
     public Mediator() {}
 
-    public void setController(Controller controller) {
+    public void setController(ActionController controller) {
         this.controller = controller;
     }
 
@@ -16,8 +16,8 @@ public class Mediator {
         this.shapeController = shapeController;
     }
 
-    public void sendRequest(Pane pane, State state) {
-        shapeController.getRequest(pane, state);
+    public void sendRequest(State state) {
+        shapeController.getRequest(state);
     }
     public void sendAnswer() {
 

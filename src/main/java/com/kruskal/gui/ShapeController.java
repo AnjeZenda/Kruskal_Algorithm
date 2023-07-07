@@ -4,112 +4,57 @@ import com.kruskal.shapeview.ShapeContainer;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.text.Text;
 
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ShapeController {
-    private final ShapeContainer shapeContainer = new ShapeContainer();
-    private final List<Circle> circles = new ArrayList<>(); // TODO Create map Text: Circle
-    private final List<Line> lines = new ArrayList<>();     // TODO create map Circle: List<Line>
-    // TODO replace variables below into ShapeContainerClass
-    private Circle startNode;
-    private Circle endNode;
+    private final ShapeContainer shapeContainer;
+    private final Pane pane;
 
 
-    public ShapeController() {
+    public ShapeController(Pane pane) {
+        this.shapeContainer = new ShapeContainer(pane);
+        this.pane = pane;
     }
 
-    public void getRequest(Pane pane, State state) {
+    public void getRequest(State state) {
+        if (state == State.RESTART) {
+            clear();
+            pane.setOnMouseClicked(event -> {});
+            return;
+        }
         pane.setOnMouseClicked(event -> {
             if (state == State.ADDNODE) {
-                addNode(pane, event);
+                addNode(event);
             } else if (state == State.ADDEDGE) {
-                addEdge(pane, event);
-            } else if (state == State.RESTART) {
-                circles.clear();
-                lines.clear();
-                startNode = null;
-                endNode = null;
+                addEdge(event);
             } else if (state == State.REMOVENODE) {
-                removeNode(pane, event);
+                removeNode(event);
             } else if (state == State.REMOVEEDGE) {
-                removeEdge(pane, event);
+                removeEdge(event);
             }
         });
     }
 
 
-    private void removeEdge(Pane pane, MouseEvent event) {
-        for (int i = 0; i < pane.getChildren().size(); ++i) {
-            if (pane.getChildren().get(i) instanceof Line line) {
-                if (line.contains(event.getX(), event.getY())) {
-                    pane.getChildren().remove(line); // TODO add removing text
-                    circles.remove(line);
-                }
-            }
-        }
+    private void clear() {
+        shapeContainer.clear();
     }
 
-    private void removeNode(Pane pane, MouseEvent event) {
-        for (int i = 0; i < pane.getChildren().size(); ++i) {
-            if (pane.getChildren().get(i) instanceof Circle node) {
-                if (node.contains(event.getX(), event.getY())) {
-                    pane.getChildren().remove(node); // TODO add removing text
-                    circles.remove(node);
-                }
-            }
-        }
+
+    private void removeEdge(MouseEvent event) {
+        shapeContainer.removeEdge(event.getX(), event.getY());
     }
 
-    private void addEdge(Pane pane, MouseEvent event) {
-        if (startNode == null) {
-            startNode = findNode(event.getX(), event.getY(), pane);
-        } else {
-            endNode = findNode(event.getX(), event.getY(), pane);
-            if (endNode != null && startNode != endNode) {
-                Line line = new Line();
-                line.startXProperty().bind(startNode.centerXProperty());
-                line.startYProperty().bind(startNode.centerYProperty());
-                line.endXProperty().bind(endNode.centerXProperty());
-                line.endYProperty().bind(endNode.centerYProperty());
-                line.setStroke(Color.RED);
-                line.setStrokeWidth(4d);
-                lines.add(line);
-                pane.getChildren().add(line);
-                startNode = null;
-                endNode = null;
-            }
-        }
+    private void removeNode(MouseEvent event) {
+        shapeContainer.removeNode(event.getX(), event.getY());
     }
 
-    private void addNode(Pane pane, MouseEvent event) {
-        Text label = new Text();
-        Circle circle = createNode(event.getX(), event.getY());
-        label.setText(Integer.toString(circles.indexOf(circle)));
-        label.setX(event.getX());
-        label.setY(event.getY());
-        pane.getChildren().addAll(circle, label);
+    private void addEdge(MouseEvent event) {
+        shapeContainer.createEdge(event.getX(), event.getY());
     }
 
-    private Circle createNode(double x, double y) {
-        Circle circle = new Circle(x, y, 30, Color.BLUEVIOLET);
-        circles.add(circle);
-        return circle;
-    }
-
-    private Circle findNode(double x, double y, Pane pane) {
-        for (int i = 0; i < pane.getChildren().size(); ++i) {
-            if (pane.getChildren().get(i) instanceof Circle node) {
-                if (node.contains(x, y)) {
-                    return node;
-                }
-            }
-        }
-        return null;
+    private void addNode(MouseEvent event) {
+        shapeContainer.createNode(event.getX(), event.getY(),
+                30, Color.rgb(161, 227, 255));
     }
 }

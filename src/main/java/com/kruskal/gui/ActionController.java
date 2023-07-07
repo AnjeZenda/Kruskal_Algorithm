@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 
-public class Controller {
+public class ActionController {
     @FXML
     private Button addEdgeButton;
     @FXML
@@ -27,8 +27,6 @@ public class Controller {
     private Button uploadGraphButton;
     @FXML
     private TextArea messageSender;
-    @FXML
-    private Pane mainPane;
     private Mediator mediator;
 
 
@@ -56,7 +54,9 @@ public class Controller {
         setDisability(false);
         nextStepButton.setDisable(true);
         messageSender.clear();
-        mainPane.getChildren().clear();
+        currentState.setText("Current state");
+        currentState.setOpacity(0.5d);
+        mediator.sendRequest(State.RESTART);
     }
 
     protected void setDisability(boolean disability) {
@@ -74,32 +74,32 @@ public class Controller {
     protected void onAddNodeButtonClick() {
         currentState.setText("Add Node");
         currentState.setOpacity(1);
-        mediator.sendRequest(mainPane, State.ADDNODE);
+        mediator.sendRequest(State.ADDNODE);
     }
     @FXML
     protected void onAddEdgeButtonClick() {
         currentState.setText("Add Edge");
         currentState.setOpacity(1);
-        mediator.sendRequest(mainPane, State.ADDEDGE);
+        mediator.sendRequest(State.ADDEDGE);
     }
     @FXML
     protected void onRemoveNodeButtonClick() {
         currentState.setText("Remove Node");
         currentState.setOpacity(1);
-        mediator.sendRequest(mainPane, State.REMOVENODE);
+        mediator.sendRequest(State.REMOVENODE);
     }
 
     @FXML
     protected void onRemoveEdgeButtonClicked() {
         currentState.setText("Remove Edge");
         currentState.setOpacity(1);
-        mediator.sendRequest(mainPane, State.REMOVEEDGE);
+        mediator.sendRequest(State.REMOVEEDGE);
     }
     @FXML
     protected void onReplaceNodeButtonClicked() {
         currentState.setText("Replace Node");
         currentState.setOpacity(1);
-        mediator.sendRequest(mainPane, State.REPLACENODE);
+        mediator.sendRequest(State.REPLACENODE);
     }
 
     protected void setMediator(Mediator mediator) {

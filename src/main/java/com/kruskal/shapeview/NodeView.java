@@ -2,14 +2,15 @@ package com.kruskal.shapeview;
 
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NodeView extends Circle {
     private int idNumber;
-    private final List<Integer> incidentEdgeIdList = new ArrayList<>();
+    private final Text text;
+    private final List<EdgeView> incidentEdgeIdList = new ArrayList<>();
 
     public int getIdNumber() {
         return idNumber;
@@ -19,27 +20,25 @@ public class NodeView extends Circle {
         this.idNumber = idNumber;
     }
 
-    public NodeView(double v, int idNumber) {
-        super(v);
+    public NodeView(double x, double y, double radius, Paint paint, int idNumber) {
+        super(x, y, radius, paint);
         this.idNumber = idNumber;
+        this.text = new Text(x, y, Integer.toString(idNumber));
     }
 
-    public NodeView(double v, Paint paint, int idNumber) {
-        super(v, paint);
-        this.idNumber = idNumber;
+    public Text getText() {
+        return text;
     }
 
-    public NodeView(int idNumber) {
-        this.idNumber = idNumber;
+    public void addIncidentEdgeId(EdgeView edge) {
+        incidentEdgeIdList.add(edge);
     }
 
-    public NodeView(double v, double v1, double v2, int idNumber) {
-        super(v, v1, v2);
-        this.idNumber = idNumber;
+    public boolean hasIncidentEdge(EdgeView edge) {
+        return incidentEdgeIdList.contains(edge);
     }
 
-    public NodeView(double v, double v1, double v2, Paint paint, int idNumber) {
-        super(v, v1, v2, paint);
-        this.idNumber = idNumber;
+    public void removeEdge(EdgeView edge) {
+        incidentEdgeIdList.remove(edge);
     }
 }
