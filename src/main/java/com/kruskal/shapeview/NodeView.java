@@ -3,21 +3,18 @@ package com.kruskal.shapeview;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NodeView extends Circle {
-    private int idNumber;
+    private final int idNumber;
     private final Text text;
     private final List<EdgeView> incidentEdgeIdList = new ArrayList<>();
 
     public int getIdNumber() {
         return idNumber;
-    }
-
-    public void setIdNumber(int idNumber) {
-        this.idNumber = idNumber;
     }
 
     public NodeView(double x, double y, double radius, Paint paint, int idNumber) {
@@ -40,5 +37,9 @@ public class NodeView extends Circle {
 
     public void removeEdge(EdgeView edge) {
         incidentEdgeIdList.remove(edge);
+    }
+
+    public boolean isStartVertex(EdgeView edge) {
+        return edge.getStartNode().equals(this);
     }
 }

@@ -2,7 +2,6 @@ package com.kruskal.gui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -32,7 +31,7 @@ public class ScreenPresenter extends Application {
     private void connectMediator() {
         mediator = new Mediator();
         mediator.setController(actionController);
-        mediator.setGraphEditor(shapeController);
+        mediator.setShapeController(shapeController);
         actionController.setMediator(mediator);
     }
     public static void main(String[] args) {

@@ -1,5 +1,7 @@
 package com.kruskal.shapeview;
 
+import com.kruskal.graph.Edge;
+import com.kruskal.graph.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
@@ -9,94 +11,109 @@ import java.util.List;
 public class ShapeContainer {
     private final List<NodeView> nodeViewList = new ArrayList<>();
     private final List<EdgeView> edgeViewList = new ArrayList<>();
-    private Pane pane;
-    private int lastNodeId = 0;
-    private int lastEdgeId = 0;
-    private NodeView startNode;
-    private NodeView endNode;
+    private final Pane pane;
+    private int lastNodeId = 0; // TODO delete this field when synchronizer will be added
+    private int lastEdgeId = 0; // TODO delete this field when synchronizer will be added
 
 
     public ShapeContainer(Pane pane) {
         this.pane = pane;
     }
 
-    public void createNode(double xCoordinate, double yCoordinate, double radius, Color color) {
-        NodeView node = new NodeView(xCoordinate, yCoordinate, radius, color, lastNodeId++);
+    public void createNode(double xCoordinate, double yCoordinate, double radius, Color color, int nodeId) {
+        NodeView node = new NodeView(xCoordinate, yCoordinate, radius, color, lastNodeId++); // TODO add nodeId here instead of lastNodeId
         nodeViewList.add(node);
         pane.getChildren().addAll(node, node.getText());
     }
 
-    public void createEdge(double x, double y) {
-        if (startNode == null) {
-            startNode = findNode(x, y);
-        } else {
-            endNode = findNode(x, y);
-            if (endNode != null && !startNode.equals(endNode)) {
-                EdgeView edge = new EdgeView(startNode.getCenterX(), startNode.getCenterY(),
-                        endNode.getCenterX(), endNode.getCenterY(), lastEdgeId++);
-                edge.setStroke(Color.BLACK);
-                edge.setStrokeWidth(3d);
-                edge.setAdjacentNodes(startNode, endNode);
-                startNode.addIncidentEdgeId(edge);
-                endNode.addIncidentEdgeId(edge);
-                edgeViewList.add(edge);
-                pane.getChildren().add(edge);
-                startNode = null;
-                endNode = null;
+    public void createEdge(int startNodeId, int endNodeId, int weight, int edgeId) {
+        EdgeView edgeView = new EdgeView(lastEdgeId++, weight); // TODO add edgeId here instead of lastEdgeId
+        NodeView startNode = null, endNode = null;
+        for (NodeView node : nodeViewList) {
+            if (node.getIdNumber() == startNodeId) {
+                startNode = node;
+                edgeView.setStartX(node.getCenterX());
+                edgeView.setStartY(node.getCenterY());
+                node.addIncidentEdgeId(edgeView);
+            }else if (node.getIdNumber() == endNodeId) {
+                endNode = node;
+                edgeView.setEndX(node.getCenterX());
+                edgeView.setEndY(node.getCenterY());
+                node.addIncidentEdgeId(edgeView);
             }
         }
+        edgeView.setAdjacentNodes(startNode, endNode);
+        edgeView.setStroke(Color.BLACK);
+        edgeView.setStrokeWidth(3d);
+        edgeViewList.add(edgeView);
+        pane.getChildren().add(edgeView);
     }
 
-    public void removeNode(double x, double y) {
-        NodeView node = findNode(x, y);
-        if (node != null) {
-            List<EdgeView> needToBeDeletedEdge = new ArrayList<>();
-            for (EdgeView edge: edgeViewList) {
-                if (node.hasIncidentEdge(edge)) {
-                    if (!node.equals(edge.getStartNode())) {
-                        edge.getStartNode().removeEdge(edge);
-                    } else {
-                        edge.getEndNode().removeEdge(edge);
+    public void removeNode(int nodeId) {
+        for (NodeView node: nodeViewList) {
+            if (nodeId == node.getIdNumber()) {
+                List<EdgeView> needToBeDeletedEdge = new ArrayList<>();
+                for (EdgeView edge: edgeViewList) {
+                    if (node.hasIncidentEdge(edge)) {
+                        if (!node.equals(edge.getStartNode())) {
+                            edge.getStartNode().removeEdge(edge);
+                        } else {
+                            edge.getEndNode().removeEdge(edge);
+                        }
+                        pane.getChildren().remove(edge);
+                        needToBeDeletedEdge.add(edge);
+                        node.removeEdge(edge);
                     }
-                    pane.getChildren().remove(edge);
-                    needToBeDeletedEdge.add(edge);
-                    node.removeEdge(edge);
                 }
-            }
-            for(EdgeView edge : needToBeDeletedEdge) {
-                if (edgeViewList.contains(edge)) {
-                    edgeViewList.remove(edge);
+                for(EdgeView edge : needToBeDeletedEdge) {
+                    if (edgeViewList.contains(edge)) {
+                        edgeViewList.remove(edge);
+                    }
                 }
-            }
-            nodeViewList.remove(node);
-            pane.getChildren().remove(node.getText());
-            pane.getChildren().remove(node);
-        }
-    }
-
-    public void removeEdge(double x, double y) {
-        for (EdgeView edge : edgeViewList) {
-            if(edge.contains(x, y)) {
-                pane.getChildren().remove(edge);
-                edge.getStartNode().removeEdge(edge);
-                edge.getEndNode().removeEdge(edge);
-                edgeViewList.remove(edge);
+                nodeViewList.remove(node);
+                pane.getChildren().remove(node.getText());
+                pane.getChildren().remove(node);
                 break;
             }
         }
     }
-    private NodeView findNode(double x, double y) {
-        for (NodeView nodeView : nodeViewList) {
-            if (nodeView.contains(x, y)) {
-                return nodeView;
+
+    public void removeEdge(int edgeId) {
+        for (EdgeView edge: edgeViewList) {
+            if (edge.getIdNumber() == edgeId) {
+                edge.getStartNode().removeEdge(edge);
+                edge.getEndNode().removeEdge(edge);
+                edgeViewList.remove(edge);
+                pane.getChildren().remove(edge);
+                break;
             }
         }
-        return null;
     }
 
     public void clear() {
         nodeViewList.clear();
         edgeViewList.clear();
         pane.getChildren().clear();
+    }
+
+    public void replaceNode(double x, double y, int objectId) {
+        for (NodeView node : nodeViewList) {
+            if (node.getIdNumber() == objectId) {
+                node.setCenterX(x);
+                node.setCenterY(y);
+                node.getText().setX(x);
+                node.getText().setY(y);
+                for (EdgeView edge : edgeViewList) {
+                    if (node.hasIncidentEdge(edge) && node.isStartVertex(edge)) {
+                        edge.setStartX(x);
+                        edge.setStartY(y);
+                    } else if (node.hasIncidentEdge(edge)) {
+                        edge.setEndX(x);
+                        edge.setEndY(y);
+                    }
+                }
+                break;
+            }
+        }
     }
 }
