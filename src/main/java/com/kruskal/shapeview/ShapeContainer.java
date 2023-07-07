@@ -12,8 +12,6 @@ public class ShapeContainer {
     private final List<NodeView> nodeViewList = new ArrayList<>();
     private final List<EdgeView> edgeViewList = new ArrayList<>();
     private final Pane pane;
-    private int lastNodeId = 0; // TODO delete this field when synchronizer will be added
-    private int lastEdgeId = 0; // TODO delete this field when synchronizer will be added
 
 
     public ShapeContainer(Pane pane) {
@@ -21,13 +19,13 @@ public class ShapeContainer {
     }
 
     public void createNode(double xCoordinate, double yCoordinate, double radius, Color color, int nodeId) {
-        NodeView node = new NodeView(xCoordinate, yCoordinate, radius, color, lastNodeId++); // TODO add nodeId here instead of lastNodeId
+        NodeView node = new NodeView(xCoordinate, yCoordinate, radius, color, nodeId);
         nodeViewList.add(node);
         pane.getChildren().addAll(node, node.getText());
     }
 
     public void createEdge(int startNodeId, int endNodeId, int weight, int edgeId) {
-        EdgeView edgeView = new EdgeView(lastEdgeId++, weight); // TODO add edgeId here instead of lastEdgeId
+        EdgeView edgeView = new EdgeView(edgeId, weight);
         NodeView startNode = null, endNode = null;
         for (NodeView node : nodeViewList) {
             if (node.getIdNumber() == startNodeId) {
