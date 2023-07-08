@@ -1,6 +1,7 @@
 package com.kruskal.gui;
 
 import com.kruskal.controlstructures.Mediator;
+import com.kruskal.kruskalalgorithm.StepMessage;
 import com.kruskal.shapeview.EdgeView;
 import com.kruskal.shapeview.NodeView;
 import javafx.fxml.FXML;
@@ -57,6 +58,7 @@ public class ActionController {
         currentState.setOpacity(1);
         nextStepButton.setDisable(false);
         setDisability(true);
+        mediator.sendRequest(new ActionMessage(State.RUNALGORITHM));
     }
 
     @FXML
@@ -68,7 +70,7 @@ public class ActionController {
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
             mediator.sendRequest(new ActionMessage(State.UPLOADGRAPH, file.getAbsolutePath()));
-            messageSender.appendText("Graph has been uploaded");
+            messageSender.appendText("Graph has been uploaded\n");
         }
     }
 
@@ -81,13 +83,13 @@ public class ActionController {
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
             mediator.sendRequest(new ActionMessage(State.SAVEGRAPH, file.getAbsolutePath()));
-            messageSender.appendText("Graph has been saved");
+            messageSender.appendText("Graph has been saved\n");
         }
     }
 
     @FXML
     protected void onNextStepButtonClick() {
-        messageSender.appendText("Next step!\n");
+        mediator.sendRequest(new ActionMessage(State.NEXTSTEP));
     }
 
     @FXML
@@ -161,7 +163,7 @@ public class ActionController {
             for (int i = 0; i < mainPane.getChildren().size(); ++i) {
                 if (mainPane.getChildren().get(i) instanceof Line edge) {
                     if (edge.contains(event.getX(), event.getY())) {
-                        mediator.sendRequest(new ActionMessage(State.REMOVEEDGE, ((EdgeView)edge).getIdNumber()));
+                        mediator.sendRequest(new ActionMessage(State.REMOVEEDGE, ((EdgeView) edge).getIdNumber()));
                     }
                 }
             }
@@ -211,5 +213,18 @@ public class ActionController {
         alert.getDialogPane().setContent(vBox);
         alert.showAndWait();
         return inputField.getText();
+    }
+
+    public void printMessage(StepMessage message) {
+        switch (message.getType()) {
+            case EDGEADDED -> messageSender.appendText("Edge between " + message.getFirstNodeId()
+                    + " and " + message.getSecondNodeId() + " were added\n");
+            case EDGEDECLINED -> messageSender.appendText("Edge between " + message.getFirstNodeId()
+                    + " and " + message.getSecondNodeId() + " were declined\n");
+            case ALGORITHMENDED -> {
+                messageSender.appendText("Algorithm ended\n");
+                nextStepButton.setDisable(true);
+            }
+        }
     }
 }
