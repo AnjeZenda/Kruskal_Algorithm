@@ -1,6 +1,7 @@
 package com.kruskal.fileparser;
 
 import com.kruskal.graph.EdgeData;
+import com.kruskal.graph.GraphBuilder;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -22,6 +22,7 @@ public class KruskalApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(KruskalApplication.class.getResource("application-view.fxml"));
         AnchorPane root = fxmlLoader.load();
         actionController = fxmlLoader.getController();
+        actionController.setStage(stage);
         shapeController = new ShapeController((Pane)root.getChildren().get(1));
         connectMediator();
         Scene scene = new Scene(root);

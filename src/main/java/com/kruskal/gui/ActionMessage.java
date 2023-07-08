@@ -9,9 +9,11 @@ public class ActionMessage {
     private int secondObjectId;
     private int weight;
 
-    public void setObjectId(int objectId) {
-        this.objectId = objectId;
+    public String getFileName() {
+        return fileName;
     }
+
+    private String fileName;
 
     public void setWeight(int weight) {
         this.weight = weight;
@@ -41,12 +43,36 @@ public class ActionMessage {
         return weight;
     }
 
-    public ActionMessage(State state, double x, double y, int objectId, int secondObjectId, int weight) {
+    public ActionMessage(State state, double x, double y, int objectId, int secondObjectId, int weight, String fileName) {
         this.state = state;
         this.x = x;
         this.y = y;
         this.objectId = objectId;
         this.secondObjectId = secondObjectId;
         this.weight = weight;
+        this.fileName = fileName;
+    }
+    public ActionMessage(State state, double x, double y) {
+        this(state, x, y, -1, -1, -1, null);
+    }
+
+    public ActionMessage(State state) {
+        this(state, -1, -1, -1, -1, -1, null);
+    }
+
+    public ActionMessage(State state, int objectId, int secondObjectId, int weight) {
+        this(state, -1, -1, objectId, secondObjectId, weight, null);
+    }
+
+    public ActionMessage(State state, int objectId) {
+        this(state, -1, -1, objectId, -1, -1, null);
+    }
+
+    public ActionMessage(State state, double x, double y, int objectId) {
+        this(state, x, y, objectId, -1, -1, null);
+    }
+
+    public ActionMessage(State state, String fileName) {
+        this(state, -1, -1, -1, -1, -1, fileName);
     }
 }

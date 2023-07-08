@@ -1,5 +1,7 @@
 package com.kruskal.controlstructures;
 
+import com.kruskal.fileparser.FileReader;
+import com.kruskal.fileparser.FileWriter;
 import com.kruskal.graph.GraphBuilder;
 import com.kruskal.gui.ActionController;
 import com.kruskal.gui.ActionMessage;
@@ -11,8 +13,12 @@ public class Mediator {
     private ControllerSynchronizer controllerSynchronizer;
     private ShapeController shapeController;
     private Kruskal algorithm;
+    private final FileReader fileReader;
+    private final FileWriter fileWriter;
 
     public Mediator() {
+        fileWriter = new FileWriter();
+        fileReader = new FileReader();
     }
 
     public void setActionController(ActionController controller) {
@@ -32,6 +38,8 @@ public class Mediator {
             case REMOVENODE -> controllerSynchronizer.deleteNode(actionMessage.getObjectId());
             case RESTART -> controllerSynchronizer.eraseGraph();
             case REPLACENODE -> shapeController.replaceNode(actionMessage.getX(), actionMessage.getY(), actionMessage.getObjectId());
+//            case UPLOADGRAPH -> fileReader.read(actionMessage.getFileName(), this);
+//            case SAVEGRAPH -> fileWriter.write(actionMessage.getFileName(), graphBuilder);
         }
     }
 }
