@@ -5,6 +5,7 @@ import com.kruskal.graph.EdgeData;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.net.URLConnection;
 import java.util.*;
 
 public class FileWriter {
@@ -12,12 +13,16 @@ public class FileWriter {
     public void write(String outFileName, List<EdgeData> edgesData, Set<Integer> nodesId){
         int nodesNumber = nodesId.size();
         File file;
+        String type = URLConnection.guessContentTypeFromName(outFileName);
+        if(!type.equals("text/plain")){
+            throw new FileFormatException("Неверный тип файла", 0);
+        }
         try {
             file = new File(outFileName);
             file.createNewFile();
         }
         catch (Exception e) {
-            throw new FileFormatException("Неудалось создать файл для записи", 0);
+            throw new FileFormatException("Неудалось создать/открыть файл для записи", 0);
         }
         PrintWriter printWriter;
         try {

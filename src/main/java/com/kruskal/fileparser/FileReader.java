@@ -4,6 +4,7 @@ import com.kruskal.controlstructures.Mediator;
 import com.kruskal.gui.ActionMessage;
 import com.kruskal.gui.State;
 
+import java.net.URLConnection;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -23,8 +24,8 @@ public class FileReader {
         Scanner scanner;
         int nodeNumber;
         List<List<Integer>> nodeMatrix = new ArrayList<>();
-
-        if(!path.endsWith(".txt")){
+        String type = URLConnection.guessContentTypeFromName(path.toString());
+        if(!type.equals("text/plain")){
             throw new FileFormatException("Неверный тип файла", 0);
         }
         try{
@@ -46,7 +47,7 @@ public class FileReader {
 
         for(int i = 1; i <= nodeNumber; i++){
             mediator.sendRequest(new ActionMessage(State.ADDNODE, 50, 50));
-            nodeMatrix.add(new ArrayList<Integer>());
+            nodeMatrix.add(new ArrayList<>());
         }
 
         scanMatrix(nodeMatrix, scanner, nodeNumber);
@@ -108,7 +109,6 @@ public class FileReader {
     }
 
     private void nodeMatrixToGraph(List<List<Integer>> nodeMatrix, Mediator mediator){
-        int edgeId = 1;
         for(int raw = 1; raw <= nodeMatrix.size(); raw++){
             for(int column = 1; column <= nodeMatrix.size(); column++){
                 if(nodeMatrix.get(raw-1).get(column-1) != 0){
@@ -117,5 +117,4 @@ public class FileReader {
             }
         }
     }
-
 }
