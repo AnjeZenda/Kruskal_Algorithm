@@ -61,20 +61,28 @@ public class ActionController {
 
     @FXML
     protected void onUploadGraphButtonClick() {
-        currentState.setText("Upload Graph");
-        currentState.setOpacity(1);
+        currentState.setText("Current state");
+        currentState.setOpacity(0.5d);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open File");
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
             mediator.sendRequest(new ActionMessage(State.UPLOADGRAPH, file.getAbsolutePath()));
+            messageSender.appendText("Graph has been uploaded");
         }
     }
 
     @FXML
     protected void onSaveGraphButtonClicked() {
-        currentState.setText("Save Graph");
-        currentState.setOpacity(1);
+        currentState.setText("Current state");
+        currentState.setOpacity(0.5d);
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open File");
+        File file = fileChooser.showSaveDialog(stage);
+        if (file != null) {
+            mediator.sendRequest(new ActionMessage(State.SAVEGRAPH, file.getAbsolutePath()));
+            messageSender.appendText("Graph has been saved");
+        }
     }
 
     @FXML

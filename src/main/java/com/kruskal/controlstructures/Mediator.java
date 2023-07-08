@@ -38,8 +38,11 @@ public class Mediator {
             case REMOVENODE -> controllerSynchronizer.deleteNode(actionMessage.getObjectId());
             case RESTART -> controllerSynchronizer.eraseGraph();
             case REPLACENODE -> shapeController.replaceNode(actionMessage.getX(), actionMessage.getY(), actionMessage.getObjectId());
-//            case UPLOADGRAPH -> fileReader.read(actionMessage.getFileName(), this);
-//            case SAVEGRAPH -> fileWriter.write(actionMessage.getFileName(), graphBuilder);
+            case UPLOADGRAPH -> {
+                controllerSynchronizer.eraseGraph();
+                fileReader.read(actionMessage.getFileName(), this);
+            }
+            case SAVEGRAPH -> fileWriter.write(actionMessage.getFileName(), controllerSynchronizer.getGraph().getEdgesData(), controllerSynchronizer.getGraph().getNodesId());
         }
     }
 }
