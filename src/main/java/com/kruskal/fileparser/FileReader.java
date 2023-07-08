@@ -1,7 +1,10 @@
 package com.kruskal.fileparser;
 
-import com.kruskal.graph.GraphBuilder;
+import com.kruskal.controlstructures.Mediator;
+import com.kruskal.gui.ActionMessage;
+import com.kruskal.gui.State;
 
+import java.net.URLConnection;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -15,18 +18,20 @@ public class FileReader {
         NUMBER
     }
 
-    public void read(String inputFileName, GraphBuilder graph){
+    public void read(String inputFileName, Mediator mediator){
 
         Path path = Paths.get(inputFileName);
         Scanner scanner;
         int nodeNumber;
         List<List<Integer>> nodeMatrix = new ArrayList<>();
-
+        String type = URLConnection.guessContentTypeFromName(path.toString());
+        if(!type.equals("text/plain")){
+            throw new FileFormatException("Неверный тип файла", 0);
+        }
         try{
             scanner = new Scanner(path);
         } catch (java.io.IOException e){
-            System.out.println("File does not exits");
-            return;
+            throw new FileFormatException("Не удалось открыть файл для чтения", 0);
         }
 
         String line = scanner.nextLine();
@@ -41,12 +46,12 @@ public class FileReader {
         }
 
         for(int i = 1; i <= nodeNumber; i++){
-            graph.addNode(i);
-            nodeMatrix.add(new ArrayList<Integer>());
+            mediator.sendRequest(new ActionMessage(State.ADDNODE, 50, 50));
+            nodeMatrix.add(new ArrayList<>());
         }
 
         scanMatrix(nodeMatrix, scanner, nodeNumber);
-        nodeMatrixToGraph(nodeMatrix, graph);
+        nodeMatrixToGraph(nodeMatrix, mediator);
     }
 
     private void scanMatrix(List<List<Integer>> nodeMatrix, Scanner scanner, int nodeNumber){
@@ -103,16 +108,13 @@ public class FileReader {
         scanner.close();
     }
 
-    private void nodeMatrixToGraph(List<List<Integer>> nodeMatrix, GraphBuilder graphBuilder){
-        int edgeId = 1;
+    private void nodeMatrixToGraph(List<List<Integer>> nodeMatrix, Mediator mediator){
         for(int raw = 1; raw <= nodeMatrix.size(); raw++){
             for(int column = 1; column <= nodeMatrix.size(); column++){
-                if(nodeMatrix.get(raw-1).get(column-1) != 0 &&
-                        graphBuilder.addEdge(raw, column, nodeMatrix.get(raw-1).get(column-1), edgeId)){
-                    edgeId++;
+                if(nodeMatrix.get(raw-1).get(column-1) != 0){
+                    mediator.sendRequest(new ActionMessage(State.ADDEDGE, raw, column, nodeMatrix.get(raw-1).get(column-1)));
                 }
             }
         }
     }
-
 }
