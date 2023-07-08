@@ -12,4 +12,5 @@ module com.kruskal.kruskalalgorithm {
     opens com.kruskal.shapeview to javafx.fxml;
     exports com.kruskal.kruskalalgorithm;
     exports com.kruskal.controlstructures;
+    exports com.kruskal.graph;
 }
