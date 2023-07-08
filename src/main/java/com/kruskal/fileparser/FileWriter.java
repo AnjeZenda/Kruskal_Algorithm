@@ -7,11 +7,20 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.List;
 
-
 public class FileWriter {
 
-    public void write(String outFileName, List<EdgeData> edgesData, int nodesNumber){
-        File file = new File(outFileName);
+    public void write(String outFileName, GraphBuilder graphBuilder){
+        List<EdgeData> edgesData = graphBuilder.getEdgesData();
+        int nodesNumber = graphBuilder.getGraph().getNodesId().size();
+        File file;
+        try {
+            file = new File(outFileName);
+            file.createNewFile();
+        }
+        catch (Exception e) {
+            System.err.println("File not found");
+            return;
+        }
         PrintWriter printWriter;
         try {
             printWriter = new PrintWriter(file);
@@ -35,7 +44,10 @@ public class FileWriter {
                         break;
                     }
                 }
-                printWriter.print(edgeData.getWeight() + " ");
+                printWriter.print(edgeData.getWeight());
+                if(secondNodeIndex != nodesNumber) {
+                    printWriter.print(" ");
+                }
                 secondNodeIndex++;
             }
             while(secondNodeIndex <= nodesNumber){

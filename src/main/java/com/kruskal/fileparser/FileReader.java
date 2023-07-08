@@ -4,51 +4,115 @@ import com.kruskal.graph.GraphBuilder;
 
 import java.nio.file.Paths;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class FileReader {
 
-    public GraphBuilder read(String inputFileName, GraphBuilder graph){
+    private enum ReadSymbol{
+        SPACE,
+        NUMBER
+    }
+
+    public void read(String inputFileName, GraphBuilder graph){
 
         Path path = Paths.get(inputFileName);
         Scanner scanner;
         int nodeNumber;
+        List<List<Integer>> nodeMatrix = new ArrayList<>();
 
         try{
             scanner = new Scanner(path);
         } catch (java.io.IOException e){
             System.out.println("File does not exits");
-            return null;
+            return;
         }
 
-        if(scanner.hasNextInt()){
-            nodeNumber = scanner.nextInt();
+        String line = scanner.nextLine();
+        Scanner lineScanner = new Scanner(line);
+        if(lineScanner.hasNextInt()){
+            nodeNumber = lineScanner.nextInt();
+            if (lineScanner.hasNext()){
+                throw new FileFormatException("Неверно задана строка с размером графа", 1);
+            }
         } else{
-            System.out.println("Wrong file format");
-            return null;
+            throw new FileFormatException("Неверно задана строка с размером графа", 1);
         }
 
         for(int i = 1; i <= nodeNumber; i++){
             graph.addNode(i);
+            nodeMatrix.add(new ArrayList<Integer>());
         }
 
-        int edgeId = 1;
-        for(int i = 1; i <= nodeNumber; i++){
-            for(int j = 1; j <= nodeNumber; j++) {
-                if (scanner.hasNextInt()) {
-                    int weight = scanner.nextInt();
-                    if(weight == 0){
-                        continue;
+        scanMatrix(nodeMatrix, scanner, nodeNumber);
+        nodeMatrixToGraph(nodeMatrix, graph);
+    }
+
+    private void scanMatrix(List<List<Integer>> nodeMatrix, Scanner scanner, int nodeNumber){
+        for(int i = 0; i < nodeNumber; i++){
+            if(!scanner.hasNextLine()) {
+                throw new FileFormatException("Задана матрица меньшего размера, чем указано в строке с размером", i+2);
+            }
+            String line = scanner.nextLine();
+            Scanner lineScanner = new Scanner(line).useDelimiter("");
+            ReadSymbol readSymbol = ReadSymbol.NUMBER;
+            int numberCount = 0;
+            for(int j = 1; j <= line.length(); j++) {
+                if((lineScanner.hasNextInt() && (readSymbol == ReadSymbol.SPACE)) ||
+                        (!lineScanner.hasNextInt() && (readSymbol == ReadSymbol.NUMBER))){
+                    throw new FileFormatException("Символ вместо ожидаемого числа", i+2);
+                }
+                if(readSymbol == ReadSymbol.NUMBER) {
+                    int weight = 0;
+                    while (lineScanner.hasNextInt()) {
+                        weight = weight * 10 + lineScanner.nextInt();
+                        if(weight >= 10){
+                            j++;
+                        }
                     }
-                    if(graph.addEdge(i, j, weight, edgeId)){
-                        edgeId++;
+
+                    if(i == numberCount && weight != 0){
+                        throw new FileFormatException("Значение на диалогнали матрицы отличное от 0", i+2);
                     }
+
+                    nodeMatrix.get(i).add(weight);
+                    if(numberCount < i && !(nodeMatrix.get(i).get(numberCount).equals(nodeMatrix.get(numberCount).get(i)))){
+                        throw new FileFormatException("Матрица не симметричная", i+2);
+                    }
+                    numberCount++;
+                } else{
+                    String next = lineScanner.next();
+                    if(!next.equals(" ")) {
+                        throw new FileFormatException("Присутствуют символы кроме разделительного пробела", i+2);
+                    }
+                }
+                if(readSymbol == ReadSymbol.NUMBER){
+                    readSymbol = ReadSymbol.SPACE;
                 } else {
-                    System.out.println("Wrong file format");
-                    return null;
+                    readSymbol = ReadSymbol.NUMBER;
+                }
+            }
+            if(numberCount != nodeNumber){
+                throw new FileFormatException("В строке не то количество чисел, которое ожидалось", i+2);
+            }
+        }
+        if(scanner.hasNextLine()){
+            throw new FileFormatException("В файле больше строк, чем ожидалось", nodeNumber+2);
+        }
+        scanner.close();
+    }
+
+    private void nodeMatrixToGraph(List<List<Integer>> nodeMatrix, GraphBuilder graphBuilder){
+        int edgeId = 1;
+        for(int raw = 1; raw <= nodeMatrix.size(); raw++){
+            for(int column = 1; column <= nodeMatrix.size(); column++){
+                if(nodeMatrix.get(raw-1).get(column-1) != 0 &&
+                        graphBuilder.addEdge(raw, column, nodeMatrix.get(raw-1).get(column-1), edgeId)){
+                    edgeId++;
                 }
             }
         }
-        return graph;
     }
+
 }
