@@ -7,6 +7,7 @@ import com.kruskal.gui.ActionController;
 import com.kruskal.gui.ActionMessage;
 import com.kruskal.gui.ShapeController;
 import com.kruskal.kruskalalgorithm.Kruskal;
+import com.kruskal.kruskalalgorithm.StepMessage;
 
 public class Mediator {
     private ActionController actionController;
@@ -43,6 +44,12 @@ public class Mediator {
                 fileReader.read(actionMessage.getFileName(), this);
             }
             case SAVEGRAPH -> fileWriter.write(actionMessage.getFileName(), controllerSynchronizer.getGraph().getEdgesData(), controllerSynchronizer.getGraph().getNodesId());
+            case RUNALGORITHM -> algorithm = new Kruskal(controllerSynchronizer.getGraph());
+            case NEXTSTEP -> {
+                StepMessage stepMessage = algorithm.makeStep();
+                actionController.printMessage(stepMessage);
+                shapeController.paintEdge(stepMessage);
+            }
         }
     }
 }

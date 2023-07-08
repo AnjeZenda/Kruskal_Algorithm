@@ -33,7 +33,7 @@ public class ShapeContainer {
                 edgeView.setStartX(node.getCenterX());
                 edgeView.setStartY(node.getCenterY());
                 node.addIncidentEdgeId(edgeView);
-            }else if (node.getIdNumber() == endNodeId) {
+            } else if (node.getIdNumber() == endNodeId) {
                 endNode = node;
                 edgeView.setEndX(node.getCenterX());
                 edgeView.setEndY(node.getCenterY());
@@ -48,10 +48,10 @@ public class ShapeContainer {
     }
 
     public void removeNode(int nodeId) {
-        for (NodeView node: nodeViewList) {
+        for (NodeView node : nodeViewList) {
             if (nodeId == node.getIdNumber()) {
                 List<EdgeView> needToBeDeletedEdge = new ArrayList<>();
-                for (EdgeView edge: edgeViewList) {
+                for (EdgeView edge : edgeViewList) {
                     if (node.hasIncidentEdge(edge)) {
                         if (!node.equals(edge.getStartNode())) {
                             edge.getStartNode().removeEdge(edge);
@@ -63,7 +63,7 @@ public class ShapeContainer {
                         node.removeEdge(edge);
                     }
                 }
-                for(EdgeView edge : needToBeDeletedEdge) {
+                for (EdgeView edge : needToBeDeletedEdge) {
                     if (edgeViewList.contains(edge)) {
                         edgeViewList.remove(edge);
                     }
@@ -77,7 +77,7 @@ public class ShapeContainer {
     }
 
     public void removeEdge(int edgeId) {
-        for (EdgeView edge: edgeViewList) {
+        for (EdgeView edge : edgeViewList) {
             if (edge.getIdNumber() == edgeId) {
                 edge.getStartNode().removeEdge(edge);
                 edge.getEndNode().removeEdge(edge);
@@ -111,6 +111,14 @@ public class ShapeContainer {
                     }
                 }
                 break;
+            }
+        }
+    }
+
+    public void colorEdge(int edgeId, Color color) {
+        for (EdgeView edge : edgeViewList) {
+            if (edge.getIdNumber() == edgeId) {
+                edge.setStroke(color);
             }
         }
     }
