@@ -52,6 +52,8 @@ public class ControllerSynchronizer {
     }
 
     public void eraseGraph(){
+        freeEdgeId = 1;
+        freeNodeId = 1;
         graphBuilder.resetGraph();
         shapeController.clear();
     }
