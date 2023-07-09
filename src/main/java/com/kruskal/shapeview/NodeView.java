@@ -21,6 +21,7 @@ public class NodeView extends Circle {
         super(x, y, radius, paint);
         this.idNumber = idNumber;
         this.text = new Text(x, y, Integer.toString(idNumber));
+        this.text.setStyle("-fx-font-size: 20");
     }
 
     public Text getText() {

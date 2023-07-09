@@ -43,8 +43,11 @@ public class ShapeContainer {
         edgeView.setAdjacentNodes(startNode, endNode);
         edgeView.setStroke(Color.BLACK);
         edgeView.setStrokeWidth(3d);
+        edgeView.getTextFlow().setLayoutX((edgeView.getEndX() + edgeView.getStartX()) / 2 - 10);
+        edgeView.getTextFlow().setLayoutY((edgeView.getEndY() + edgeView.getStartY()) / 2 - 10);
+        edgeView.getTextFlow().getChildren().add(edgeView.getWeightText());
         edgeViewList.add(edgeView);
-        pane.getChildren().add(edgeView);
+        pane.getChildren().addAll(edgeView, edgeView.getTextFlow());
     }
 
     public void removeNode(int nodeId) {
@@ -58,6 +61,7 @@ public class ShapeContainer {
                         } else {
                             edge.getEndNode().removeEdge(edge);
                         }
+                        pane.getChildren().remove(edge.getTextFlow());
                         pane.getChildren().remove(edge);
                         needToBeDeletedEdge.add(edge);
                         node.removeEdge(edge);
@@ -82,6 +86,7 @@ public class ShapeContainer {
                 edge.getStartNode().removeEdge(edge);
                 edge.getEndNode().removeEdge(edge);
                 edgeViewList.remove(edge);
+                pane.getChildren().remove(edge.getTextFlow());
                 pane.getChildren().remove(edge);
                 break;
             }
@@ -105,9 +110,13 @@ public class ShapeContainer {
                     if (node.hasIncidentEdge(edge) && node.isStartVertex(edge)) {
                         edge.setStartX(x);
                         edge.setStartY(y);
+                        edge.getTextFlow().setLayoutX((edge.getEndX() + edge.getStartX()) / 2 - 10);
+                        edge.getTextFlow().setLayoutY((edge.getEndY() + edge.getStartY()) / 2 - 10);
                     } else if (node.hasIncidentEdge(edge)) {
                         edge.setEndX(x);
                         edge.setEndY(y);
+                        edge.getTextFlow().setLayoutX((edge.getEndX() + edge.getStartX()) / 2 - 10);
+                        edge.getTextFlow().setLayoutY((edge.getEndY() + edge.getStartY()) / 2 - 10);
                     }
                 }
                 break;

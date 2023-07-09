@@ -3,6 +3,7 @@ package com.kruskal.gui;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -25,7 +26,9 @@ public class KruskalApplication extends Application {
         actionController.setStage(stage);
         shapeController = new ShapeController((Pane)root.getChildren().get(1));
         connectMediator();
+        Image icon = new Image(getClass().getResourceAsStream("/icons/graph_icon.png"));
         Scene scene = new Scene(root);
+        stage.getIcons().add(icon);
         stage.setTitle("Kruskal's algorithm");
         stage.setScene(scene);
         stage.show();
