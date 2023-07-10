@@ -18,7 +18,7 @@ public class FileReader {
         NUMBER
     }
 
-    public void read(String inputFileName, Mediator mediator){
+    public void read(String inputFileName, double screenWidth, double screenHeight, Mediator mediator){
 
         Path path = Paths.get(inputFileName);
         Scanner scanner;
@@ -44,12 +44,10 @@ public class FileReader {
         } else{
             throw new FileFormatException("Неверно задана строка с размером графа", 1);
         }
-
-        for(int i = 1; i <= nodeNumber; i++){
-            mediator.sendRequest(new ActionMessage(State.ADDNODE, 50, 50));
-            nodeMatrix.add(new ArrayList<>());
+        if(nodeNumber > 100){
+            throw new FileFormatException("Размер графа превышает 80 вершин", 1);
         }
-
+        nodeReader(nodeNumber, screenWidth, screenHeight, mediator, nodeMatrix);
         scanMatrix(nodeMatrix, scanner, nodeNumber);
         nodeMatrixToGraph(nodeMatrix, mediator);
     }
@@ -114,6 +112,34 @@ public class FileReader {
                 if(nodeMatrix.get(raw-1).get(column-1) != 0){
                     mediator.sendRequest(new ActionMessage(State.ADDEDGE, raw, column, nodeMatrix.get(raw-1).get(column-1)));
                 }
+            }
+        }
+    }
+
+    private void nodeReader(int nodeNumber, double screenWidth, double screenHeight, Mediator mediator, List<List<Integer>> nodeMatrix){
+        double radius = Double.min((screenHeight - 80)/2, (screenWidth - 80)/2);
+        double centreY = screenHeight/2;
+        double centreX = screenWidth/2;
+        int layerNodeNumber = 40;
+        if (nodeNumber < layerNodeNumber){
+            layerNodeNumber = nodeNumber;
+        }
+        double degreeStep = Math.toRadians((double) 360/(layerNodeNumber));
+        int layerNodeIterator = 0;
+        for(int i = 1; i <= nodeNumber; i++){
+            mediator.sendRequest(new ActionMessage(State.ADDNODE, centreX - Math.sin(degreeStep*layerNodeIterator)*radius,
+                    centreY - Math.cos(degreeStep*layerNodeIterator)*radius));
+            nodeMatrix.add(new ArrayList<>());
+            layerNodeIterator++;
+            if(layerNodeIterator == layerNodeNumber){
+                layerNodeNumber -= 10;
+                layerNodeIterator = 0;
+                if (nodeNumber - i < layerNodeNumber){
+                    layerNodeNumber = nodeNumber - i;
+                }
+                degreeStep =  Math.toRadians((double) 360/(layerNodeNumber));
+                radius = radius - 60;
+
             }
         }
     }
