@@ -41,7 +41,7 @@ public class Mediator {
             case REPLACENODE -> shapeController.replaceNode(actionMessage.getX(), actionMessage.getY(), actionMessage.getObjectId());
             case UPLOADGRAPH -> {
                 controllerSynchronizer.eraseGraph();
-                fileReader.read(actionMessage.getFileName(), this);
+                fileReader.read(actionMessage.getFileName(), actionMessage.getX(), actionMessage.getY(), this);
             }
             case SAVEGRAPH -> fileWriter.write(actionMessage.getFileName(), controllerSynchronizer.getGraph().getEdgesData(), controllerSynchronizer.getGraph().getNodesId());
             case RUNALGORITHM -> algorithm = new Kruskal(controllerSynchronizer.getGraph());
