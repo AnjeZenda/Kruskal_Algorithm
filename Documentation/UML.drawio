@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="Gndt4bWzFEOanfgfqyMN" name="Страница 1">
-        <mxGraphModel dx="1128" dy="960" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="5000" pageHeight="5000" math="0" shadow="0">
+        <mxGraphModel dx="1354" dy="458" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="5000" pageHeight="5000" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -112,16 +112,16 @@
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="39" value="Mediator" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-                    <mxGeometry x="1779" y="1091.5" width="276" height="153" as="geometry"/>
+                    <mxGeometry x="1779" y="1091.5" width="276" height="185" as="geometry"/>
                 </mxCell>
-                <mxCell id="40" value="- actionController: ActionController&#10;- controllerSynchronizer: ControllerSynchronizer&#10;- shapeController: ShapeController&#10;- algorithm: Kruskal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="39" vertex="1">
-                    <mxGeometry y="26" width="276" height="64" as="geometry"/>
+                <mxCell id="40" value="- actionController: ActionController&#10;- controllerSynchronizer: ControllerSynchronizer&#10;- shapeController: ShapeController&#10;- algorithm: Kruskal&#10;- fileReader: FileReader&#10;- fileWriter: FileWriter" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="39" vertex="1">
+                    <mxGeometry y="26" width="276" height="96" as="geometry"/>
                 </mxCell>
                 <mxCell id="41" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="39" vertex="1">
-                    <mxGeometry y="90" width="276" height="8" as="geometry"/>
+                    <mxGeometry y="122" width="276" height="8" as="geometry"/>
                 </mxCell>
                 <mxCell id="42" value="+ setActionController(ActionController): void&#10;+ setShapeController(ShapeController): void&#10;+ sendRequest(ActionMessage): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="39" vertex="1">
-                    <mxGeometry y="98" width="276" height="55" as="geometry"/>
+                    <mxGeometry y="130" width="276" height="55" as="geometry"/>
                 </mxCell>
                 <mxCell id="59" value="Edge" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;connectable=0;" parent="1" vertex="1">
                     <mxGeometry x="604" y="808.5" width="194" height="186" as="geometry"/>
