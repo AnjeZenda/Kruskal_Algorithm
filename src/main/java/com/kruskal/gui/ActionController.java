@@ -69,7 +69,7 @@ public class ActionController {
         fileChooser.setTitle("Open File");
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
-            mediator.sendRequest(new ActionMessage(State.UPLOADGRAPH, file.getAbsolutePath()));
+            mediator.sendRequest(new ActionMessage(State.UPLOADGRAPH, mainPane.getWidth(), mainPane.getHeight(),file.getAbsolutePath()));
             messageSender.appendText("Graph has been uploaded\n");
         }
     }

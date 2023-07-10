@@ -75,4 +75,7 @@ public class ActionMessage {
     public ActionMessage(State state, String fileName) {
         this(state, -1, -1, -1, -1, -1, fileName);
     }
+    public ActionMessage(State state, double x, double y,String fileName) {
+        this(state, x, y, -1, -1, -1, fileName);
+    }
 }
