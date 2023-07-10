@@ -9,12 +9,16 @@ import com.kruskal.graph.EdgeData;
 import com.kruskal.graph.Graph;
 
 public class Kruskal {
+    private final List<StepMessage> steps;
+    private int currentStep;
     private final List<EdgeData> edges;
     private final List<Set<Integer>> connectedNodes;
     private int edgeNumber;
     private int edgesWeightSum;
 
     public Kruskal(Graph graph){
+        steps = new ArrayList<StepMessage>();
+        currentStep = 0;
         Set<Integer> nodes = graph.getNodesId();
         edges = graph.getEdgesData();
 
@@ -37,7 +41,16 @@ public class Kruskal {
     }
 
     public StepMessage makeStep(){
-        System.out.println(connectedNodes);
+        if(edgeNumber == edges.size()){
+            return new StepMessage(StepMessageType.ALGORITHMENDED);
+        }
+
+        if(currentStep < edgeNumber){
+            currentStep++;
+            return steps.get(currentStep - 1);
+        }
+
+
         if(connectedNodes.size() == 1){
             return new StepMessage(StepMessageType.ALGORITHMENDED);
         }
@@ -63,13 +76,28 @@ public class Kruskal {
         }
 
         if(firstNodeSet.equals(secondNodeSet)){
-            return new StepMessage(currentEdge, StepMessageType.EDGEDECLINED);
+            steps.add(new StepMessage(currentEdge, StepMessageType.EDGEDECLINED, edgesWeightSum));
+            currentStep++;
+            return steps.get(currentStep - 1);
         }
 
         firstNodeSet.addAll(secondNodeSet);
         connectedNodes.remove(secondNodeSet);
         edgesWeightSum += currentEdge.getWeight();
-        return new StepMessage(currentEdge, StepMessageType.EDGEADDED);
+
+        steps.add(new StepMessage(currentEdge, StepMessageType.EDGEADDED, edgesWeightSum - currentEdge.getWeight()));
+        currentStep++;
+        return steps.get(currentStep - 1);
+    }
+
+    public StepMessage stepBack(){
+        if(currentStep == 0){
+            return null;
+        }
+
+        currentStep--;
+        edgesWeightSum = steps.get(currentStep).getPreviousTreeWeight();
+        return steps.get(currentStep);
     }
 
     public int getCurrentTreeWeight(){
