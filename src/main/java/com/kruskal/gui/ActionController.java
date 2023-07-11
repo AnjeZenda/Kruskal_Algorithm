@@ -49,13 +49,11 @@ public class ActionController {
     private Mediator mediator;
     private NodeView startNode;
     private NodeView endNode;
+    private Stage stage;
 
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-
-    private Stage stage;
-
 
     @FXML
     protected void onRunAlgorithmButtonClick() {
@@ -66,7 +64,9 @@ public class ActionController {
         try {
             mediator.sendRequest(new ActionMessage(State.RUNALGORITHM));
         } catch (Exception exception) {
-            createErrorAlertMessage(exception.getMessage());
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(exception.getMessage());
+            alert.showAndWait();
         }
     }
 
@@ -139,6 +139,7 @@ public class ActionController {
         setDisability(false);
         treeWeightInfo.setText("0");
         nextStepButton.setDisable(true);
+        previousStepButton.setDisable(true);
         messageSender.clear();
         currentState.setText("Current state");
         currentState.setOpacity(0.5d);
@@ -307,7 +308,10 @@ public class ActionController {
 
     public void deleteLastMessage() {
         String[] sentences = messageSender.getText().split("\n");
-        if (sentences.length > 0) {
+        if (sentences.length > 0 && sentences[sentences.length - 1].contains("Algorithm ended")) {
+            sentences[sentences.length - 1] = "";
+            sentences[sentences.length - 2] = "";
+        } else if (sentences.length > 0 && !sentences[sentences.length - 1].contains("Graph has been")) {
             sentences[sentences.length - 1] = "";
         }
         messageSender.setText(String.join("\n", sentences));
