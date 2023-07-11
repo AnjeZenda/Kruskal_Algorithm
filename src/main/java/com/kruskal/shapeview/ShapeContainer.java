@@ -42,8 +42,8 @@ public class ShapeContainer {
         }
         edgeView.setAdjacentNodes(startNode, endNode);
         edgeView.setStroke(Color.BLACK);
-        edgeView.setStrokeWidth(3d);
-        edgeView.getTextFlow().setLayoutX((edgeView.getEndX() + edgeView.getStartX()) / 2 - 10);
+        edgeView.setStrokeWidth(5d);
+        edgeView.getTextFlow().setLayoutX((edgeView.getEndX() + edgeView.getStartX()) / 2 - 20);
         edgeView.getTextFlow().setLayoutY((edgeView.getEndY() + edgeView.getStartY()) / 2 - 10);
         edgeView.getTextFlow().getChildren().add(edgeView.getWeightText());
         edgeViewList.add(edgeView);
