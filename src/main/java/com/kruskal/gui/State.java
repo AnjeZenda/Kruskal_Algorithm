@@ -10,5 +10,6 @@ public enum State {
     UPLOADGRAPH,
     RUNALGORITHM,
     NEXTSTEP,
-    RESTART
+    RESTART,
+    PREVIOUSSTEP
 }

@@ -1,6 +1,7 @@
 package com.kruskal.gui;
 
 import com.kruskal.controlstructures.Mediator;
+import com.kruskal.fileparser.FileFormatException;
 import com.kruskal.kruskalalgorithm.StepMessage;
 import com.kruskal.shapeview.EdgeView;
 import com.kruskal.shapeview.NodeView;
@@ -26,6 +27,8 @@ public class ActionController {
     @FXML
     private Button nextStepButton;
     @FXML
+    private Button previousStepButton;
+    @FXML
     private Button removeEdgeButton;
     @FXML
     private Button removeNodeButton;
@@ -41,6 +44,8 @@ public class ActionController {
     private TextArea messageSender;
     @FXML
     private Pane mainPane;
+    @FXML
+    private Label treeWeightInfo;
     private Mediator mediator;
     private NodeView startNode;
     private NodeView endNode;
@@ -58,7 +63,11 @@ public class ActionController {
         currentState.setOpacity(1);
         nextStepButton.setDisable(false);
         setDisability(true);
-        mediator.sendRequest(new ActionMessage(State.RUNALGORITHM));
+        try {
+            mediator.sendRequest(new ActionMessage(State.RUNALGORITHM));
+        } catch (Exception exception) {
+            createErrorAlertMessage(exception.getMessage());
+        }
     }
 
     @FXML
@@ -69,8 +78,16 @@ public class ActionController {
         fileChooser.setTitle("Open File");
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
-            mediator.sendRequest(new ActionMessage(State.UPLOADGRAPH, mainPane.getWidth(), mainPane.getHeight(),file.getAbsolutePath()));
-            messageSender.appendText("Graph has been uploaded\n");
+            try {
+                mediator.sendRequest(new ActionMessage(State.UPLOADGRAPH, mainPane.getWidth(), mainPane.getHeight(), file.getAbsolutePath()));
+                messageSender.appendText("Graph has been uploaded\n");
+            } catch (FileFormatException exception) {
+                createErrorAlertMessage(exception.toString());
+            } catch (Exception exception) {
+                createErrorAlertMessage(exception.getMessage());
+            }
+        } else {
+            createErrorAlertMessage("Не удалось открыть файл");
         }
     }
 
@@ -82,19 +99,45 @@ public class ActionController {
         fileChooser.setTitle("Open File");
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
-            mediator.sendRequest(new ActionMessage(State.SAVEGRAPH, file.getAbsolutePath()));
-            messageSender.appendText("Graph has been saved\n");
+            try {
+                mediator.sendRequest(new ActionMessage(State.SAVEGRAPH, file.getAbsolutePath()));
+                messageSender.appendText("Graph has been saved\n");
+            } catch (FileFormatException exception) {
+                createErrorAlertMessage(exception.toString());
+            }
+        } else {
+            createErrorAlertMessage("Не удалось открыть файл");
         }
     }
 
     @FXML
     protected void onNextStepButtonClick() {
-        mediator.sendRequest(new ActionMessage(State.NEXTSTEP));
+        if (previousStepButton.isDisable()) {
+            previousStepButton.setDisable(false);
+        }
+        try {
+            mediator.sendRequest(new ActionMessage(State.NEXTSTEP));
+        } catch (Exception exception) {
+            createErrorAlertMessage(exception.getMessage());
+        }
+    }
+
+    @FXML
+    protected void onPreviousStepButtonClick() {
+        if (nextStepButton.isDisable()) {
+            nextStepButton.setDisable(false);
+        }
+        try {
+            mediator.sendRequest(new ActionMessage(State.PREVIOUSSTEP));
+        } catch (Exception exception) {
+            createErrorAlertMessage(exception.getMessage());
+        }
     }
 
     @FXML
     protected void onRestartButtonClick() {
         setDisability(false);
+        treeWeightInfo.setText("0");
         nextStepButton.setDisable(true);
         messageSender.clear();
         currentState.setText("Current state");
@@ -118,56 +161,73 @@ public class ActionController {
     protected void onAddNodeButtonClick() {
         currentState.setText("Add Node");
         currentState.setOpacity(1);
-        mainPane.setOnMouseClicked(event -> {
-            mediator.sendRequest(new ActionMessage(State.ADDNODE, event.getX(), event.getY()));
-        });
+        try {
+            mainPane.setOnMouseClicked(event -> {
+                mediator.sendRequest(new ActionMessage(State.ADDNODE, event.getX(), event.getY()));
+            });
+        } catch (Exception exception) {
+            createErrorAlertMessage(exception.getMessage());
+        }
     }
 
     @FXML
     protected void onAddEdgeButtonClick() {
         currentState.setText("Add Edge");
         currentState.setOpacity(1);
-        mainPane.setOnMouseClicked(event -> {
-            if (startNode == null) {
-                startNode = findNode(event.getX(), event.getY());
-            } else {
-                endNode = findNode(event.getX(), event.getY());
-                if (endNode != null && !endNode.equals(startNode)) {
-                    String inputWeight = runAlert();
-                    int weight = !inputWeight.equals("") ? Integer.parseInt(inputWeight) : 1;
-                    mediator.sendRequest(new ActionMessage(State.ADDEDGE, startNode.getIdNumber(), endNode.getIdNumber(), weight));
-                    startNode = null;
-                    endNode = null;
+        try {
+            mainPane.setOnMouseClicked(event -> {
+                if (startNode == null) {
+                    startNode = findNode(event.getX(), event.getY());
+                } else {
+                    endNode = findNode(event.getX(), event.getY());
+                    if (endNode != null && !endNode.equals(startNode)) {
+                        String inputWeight = runAlert();
+                        int weight = !inputWeight.equals("") ? Integer.parseInt(inputWeight) : 1;
+                        mediator.sendRequest(new ActionMessage(State.ADDEDGE, startNode.getIdNumber(), endNode.getIdNumber(), weight));
+                        startNode = null;
+                        endNode = null;
+                    }
                 }
-            }
-        });
+            });
+        }
+        catch (Exception exception) {
+            createErrorAlertMessage(exception.getMessage());
+        }
     }
 
     @FXML
     protected void onRemoveNodeButtonClick() {
         currentState.setText("Remove Node");
         currentState.setOpacity(1);
-        mainPane.setOnMouseClicked(event -> {
-            NodeView removingNode = findNode(event.getX(), event.getY());
-            if (removingNode != null) {
-                mediator.sendRequest(new ActionMessage(State.REMOVENODE, removingNode.getIdNumber()));
-            }
-        });
+        try {
+            mainPane.setOnMouseClicked(event -> {
+                NodeView removingNode = findNode(event.getX(), event.getY());
+                if (removingNode != null) {
+                    mediator.sendRequest(new ActionMessage(State.REMOVENODE, removingNode.getIdNumber()));
+                }
+            });
+        } catch (Exception exception) {
+            createErrorAlertMessage(exception.getMessage());
+        }
     }
 
     @FXML
     protected void onRemoveEdgeButtonClicked() {
         currentState.setText("Remove Edge");
         currentState.setOpacity(1);
-        mainPane.setOnMouseClicked(event -> {
-            for (int i = 0; i < mainPane.getChildren().size(); ++i) {
-                if (mainPane.getChildren().get(i) instanceof Line edge) {
-                    if (edge.contains(event.getX(), event.getY())) {
-                        mediator.sendRequest(new ActionMessage(State.REMOVEEDGE, ((EdgeView) edge).getIdNumber()));
+        try {
+            mainPane.setOnMouseClicked(event -> {
+                for (int i = 0; i < mainPane.getChildren().size(); ++i) {
+                    if (mainPane.getChildren().get(i) instanceof Line edge) {
+                        if (edge.contains(event.getX(), event.getY())) {
+                            mediator.sendRequest(new ActionMessage(State.REMOVEEDGE, ((EdgeView) edge).getIdNumber()));
+                        }
                     }
                 }
-            }
-        });
+            });
+        } catch (Exception exception) {
+            createErrorAlertMessage(exception.getMessage());
+        }
     }
 
     @FXML
@@ -175,18 +235,22 @@ public class ActionController {
         currentState.setText("Replace Node");
         currentState.setOpacity(1);
         startNode = null;
-        mainPane.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) { // Left mouse button
-                if (startNode == null) {
-                    startNode = findNode(event.getX(), event.getY());
-                } else {
-                    mediator.sendRequest(new ActionMessage(State.REPLACENODE, event.getX(), event.getY(), startNode.getIdNumber()));
+        try {
+            mainPane.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY) {
+                    if (startNode == null) {
+                        startNode = findNode(event.getX(), event.getY());
+                    } else {
+                        mediator.sendRequest(new ActionMessage(State.REPLACENODE, event.getX(), event.getY(), startNode.getIdNumber()));
+                        startNode = null;
+                    }
+                } else if (event.getButton() == MouseButton.SECONDARY) {
                     startNode = null;
                 }
-            } else if (event.getButton() == MouseButton.SECONDARY) {// Right mouse button
-                startNode = null;
-            }
-        });
+            });
+        } catch (Exception exception) {
+            createErrorAlertMessage(exception.getMessage());
+        }
     }
 
     public void setMediator(Mediator mediator) {
@@ -207,7 +271,20 @@ public class ActionController {
         alert.setTitle("Text field");
         alert.setHeaderText("Введите вес ребра");
         TextField inputField = new TextField();
-        inputField.setMaxWidth(Double.MAX_VALUE);
+        inputField.setPrefWidth(Integer.toString(Integer.MAX_VALUE).length());
+        inputField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.startsWith("0") || !newValue.matches("\\d*") || newValue.equals("") ||
+                    Integer.toString(Integer.MAX_VALUE).length() < newValue.length() ||
+                    Double.parseDouble(newValue) > Integer.MAX_VALUE) {
+                inputField.setStyle("-fx-border-color: red");
+                Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setDisable(true);
+            } else {
+                inputField.setStyle("-fx-border-color: blue");
+                Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setDisable(false);
+            }
+        });
         VBox vBox = new VBox();
         vBox.getChildren().addAll(inputField);
         alert.getDialogPane().setContent(vBox);
@@ -226,5 +303,28 @@ public class ActionController {
                 nextStepButton.setDisable(true);
             }
         }
+    }
+
+    public void deleteLastMessage() {
+        String[] sentences = messageSender.getText().split("\n");
+        if (sentences.length > 0) {
+            sentences[sentences.length - 1] = "";
+        }
+        messageSender.setText(String.join("\n", sentences));
+    }
+
+    public void blockPreviousStepButton() {
+        previousStepButton.setDisable(true);
+    }
+
+    public void printTreeWeight(int treeWeight) {
+        treeWeightInfo.setText(Integer.toString(treeWeight));
+    }
+
+    private void createErrorAlertMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(message);
+        alert.showAndWait();
+        mediator.sendRequest(new ActionMessage(State.RESTART));
     }
 }

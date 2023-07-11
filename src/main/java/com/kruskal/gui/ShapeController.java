@@ -46,4 +46,8 @@ public class ShapeController {
             case EDGEDECLINED -> shapeContainer.colorEdge(stepMessage.getEdgeId(), Color.RED);
         }
     }
+
+    public void paintEdgeDefault(StepMessage stepMessage) {
+        shapeContainer.colorEdge(stepMessage.getEdgeId(), Color.BLACK);
+    }
 }
