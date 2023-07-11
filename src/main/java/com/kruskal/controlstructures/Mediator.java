@@ -2,7 +2,9 @@ package com.kruskal.controlstructures;
 
 import com.kruskal.fileparser.FileReader;
 import com.kruskal.fileparser.FileWriter;
+import com.kruskal.graph.Graph;
 import com.kruskal.graph.GraphBuilder;
+import com.kruskal.graph.GraphConnectednessExeption;
 import com.kruskal.gui.ActionController;
 import com.kruskal.gui.ActionMessage;
 import com.kruskal.gui.ShapeController;
@@ -44,7 +46,14 @@ public class Mediator {
                 fileReader.read(actionMessage.getFileName(), actionMessage.getX(), actionMessage.getY(), this);
             }
             case SAVEGRAPH -> fileWriter.write(actionMessage.getFileName(), controllerSynchronizer.getGraph().getEdgesData(), controllerSynchronizer.getGraph().getNodesId());
-            case RUNALGORITHM -> algorithm = new Kruskal(controllerSynchronizer.getGraph());
+            case RUNALGORITHM -> {
+                Graph graph = controllerSynchronizer.getGraph();
+                if(graph.isValid()){
+                    algorithm = new Kruskal(graph);
+                }else{
+                    throw new GraphConnectednessExeption("Graph is not connected");
+                }
+            }
             case NEXTSTEP -> {
                 StepMessage stepMessage = algorithm.makeStep();
                 actionController.printMessage(stepMessage);

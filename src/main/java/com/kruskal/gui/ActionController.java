@@ -2,6 +2,7 @@ package com.kruskal.gui;
 
 import com.kruskal.controlstructures.Mediator;
 import com.kruskal.fileparser.FileFormatException;
+import com.kruskal.graph.GraphConnectednessExeption;
 import com.kruskal.kruskalalgorithm.StepMessage;
 import com.kruskal.shapeview.EdgeView;
 import com.kruskal.shapeview.NodeView;
@@ -16,6 +17,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActionController {
     @FXML
@@ -57,13 +60,13 @@ public class ActionController {
 
     @FXML
     protected void onRunAlgorithmButtonClick() {
-        currentState.setText("Run Algorithm");
-        currentState.setOpacity(1);
-        nextStepButton.setDisable(false);
-        setDisability(true);
         try {
             mediator.sendRequest(new ActionMessage(State.RUNALGORITHM));
-        } catch (Exception exception) {
+            currentState.setText("Run Algorithm");
+            currentState.setOpacity(1);
+            nextStepButton.setDisable(false);
+            setDisability(true);
+        } catch (GraphConnectednessExeption exception) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText(exception.getMessage());
             alert.showAndWait();
@@ -164,7 +167,9 @@ public class ActionController {
         currentState.setOpacity(1);
         try {
             mainPane.setOnMouseClicked(event -> {
-                mediator.sendRequest(new ActionMessage(State.ADDNODE, event.getX(), event.getY()));
+                if (mainPane.contains(event.getX() + 40, event.getY())) {
+                    mediator.sendRequest(new ActionMessage(State.ADDNODE, event.getX(), event.getY()));
+                }
             });
         } catch (Exception exception) {
             createErrorAlertMessage(exception.getMessage());
@@ -307,14 +312,20 @@ public class ActionController {
     }
 
     public void deleteLastMessage() {
-        String[] sentences = messageSender.getText().split("\n");
-        if (sentences.length > 0 && sentences[sentences.length - 1].contains("Algorithm ended")) {
-            sentences[sentences.length - 1] = "";
-            sentences[sentences.length - 2] = "";
-        } else if (sentences.length > 0 && !sentences[sentences.length - 1].contains("Graph has been")) {
-            sentences[sentences.length - 1] = "";
+        List<String> sentences = new ArrayList<>(List.of(messageSender.getText().split("\n")));
+        if (sentences.size() > 0 && sentences.contains("Algorithm ended")) {
+            sentences.remove(sentences.size() - 1);
+            if (sentences.size() > 0) {
+                sentences.set(sentences.size() - 1, "");
+            }
+        } else {
+            sentences.set(sentences.size() - 1, "");
         }
-        messageSender.setText(String.join("\n", sentences));
+        if (!sentences.isEmpty()) {
+            messageSender.setText(String.join("\n", sentences));
+        } else {
+            messageSender.setText("");
+        }
     }
 
     public void blockPreviousStepButton() {

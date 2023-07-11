@@ -123,7 +123,7 @@ public class Graph {
         }
     }
 
-    boolean isValid(){
+    public boolean isValid(){
         Set<Node> viewedNodes = new HashSet<Node>();
         List<Node> nodesToView = new ArrayList<Node>();
 
