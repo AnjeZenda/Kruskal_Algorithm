@@ -22,7 +22,10 @@ public class GraphBuilder {
         return graph.addNode(newNodeId);
     }
     public boolean addEdge(int firstNodeId, int secondNodeId, int weight, int edgeId){
-        return graph.addEdge(firstNodeId, secondNodeId, weight, edgeId);
+        if(weight > 0){
+            return graph.addEdge(firstNodeId, secondNodeId, weight, edgeId);
+        }
+        return false;
     }
 
     public boolean isValid(){
