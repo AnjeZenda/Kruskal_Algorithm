@@ -41,15 +41,15 @@ public class Kruskal {
     }
 
     public StepMessage makeStep(){
-        if(edgeNumber == edges.size()){
-            return new StepMessage(StepMessageType.ALGORITHMENDED);
-        }
-
         if(currentStep < edgeNumber){
             currentStep++;
+            edgesWeightSum += steps.get(currentStep - 1).getWeightShift();
             return steps.get(currentStep - 1);
         }
 
+        if(edgeNumber == edges.size()){
+            return new StepMessage(StepMessageType.ALGORITHMENDED);
+        }
 
         if(connectedNodes.size() == 1){
             return new StepMessage(StepMessageType.ALGORITHMENDED);
@@ -76,7 +76,7 @@ public class Kruskal {
         }
 
         if(firstNodeSet.equals(secondNodeSet)){
-            steps.add(new StepMessage(currentEdge, StepMessageType.EDGEDECLINED, edgesWeightSum));
+            steps.add(new StepMessage(currentEdge, StepMessageType.EDGEDECLINED, 0));
             currentStep++;
             return steps.get(currentStep - 1);
         }
@@ -85,7 +85,7 @@ public class Kruskal {
         connectedNodes.remove(secondNodeSet);
         edgesWeightSum += currentEdge.getWeight();
 
-        steps.add(new StepMessage(currentEdge, StepMessageType.EDGEADDED, edgesWeightSum - currentEdge.getWeight()));
+        steps.add(new StepMessage(currentEdge, StepMessageType.EDGEADDED, currentEdge.getWeight()));
         currentStep++;
         return steps.get(currentStep - 1);
     }
@@ -96,7 +96,7 @@ public class Kruskal {
         }
 
         currentStep--;
-        edgesWeightSum = steps.get(currentStep).getPreviousTreeWeight();
+        edgesWeightSum -= steps.get(currentStep).getWeightShift();
         return steps.get(currentStep);
     }
 
