@@ -43,6 +43,8 @@ public class ActionController {
     private TextArea messageSender;
     @FXML
     private Pane mainPane;
+    @FXML
+    private Label treeWeightInfo;
     private Mediator mediator;
     private NodeView startNode;
     private NodeView endNode;
@@ -108,6 +110,7 @@ public class ActionController {
     @FXML
     protected void onRestartButtonClick() {
         setDisability(false);
+        treeWeightInfo.setText("0");
         nextStepButton.setDisable(true);
         messageSender.clear();
         currentState.setText("Current state");
@@ -265,5 +268,9 @@ public class ActionController {
 
     public void blockPreviousStepButton() {
         previousStepButton.setDisable(true);
+    }
+
+    public void printTreeWeight(int treeWeight) {
+        treeWeightInfo.setText(Integer.toString(treeWeight));
     }
 }

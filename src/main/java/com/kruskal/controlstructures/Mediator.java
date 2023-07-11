@@ -49,12 +49,14 @@ public class Mediator {
                 StepMessage stepMessage = algorithm.makeStep();
                 actionController.printMessage(stepMessage);
                 shapeController.paintEdge(stepMessage);
+                actionController.printTreeWeight(algorithm.getCurrentTreeWeight());
             }
             case PREVIOUSSTEP -> {
                 StepMessage stepMessage = algorithm.stepBack();
                 if (stepMessage != null) {
                     actionController.deleteLastMessage();
                     shapeController.paintEdgeDefault(stepMessage);
+                    actionController.printTreeWeight(algorithm.getCurrentTreeWeight());
                 } else {
                     actionController.blockPreviousStepButton();
                     actionController.deleteLastMessage();

@@ -5,6 +5,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #F4F7FB;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kruskal.gui.ActionController">
    <children>
@@ -26,5 +27,14 @@
          </children>
       </AnchorPane>
       <Pane fx:id="mainPane" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #F7FBFC;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="0.0" />
+      <Pane layoutX="538.0" prefHeight="60.0" prefWidth="60.0" style="-fx-background-color: #B9D7EA;" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label fx:id="treeWeightInfo" alignment="CENTER" prefHeight="60.0" prefWidth="60.0" text="0">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
    </children>
 </AnchorPane>
