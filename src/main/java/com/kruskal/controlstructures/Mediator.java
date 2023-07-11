@@ -50,6 +50,16 @@ public class Mediator {
                 actionController.printMessage(stepMessage);
                 shapeController.paintEdge(stepMessage);
             }
+            case PREVIOUSSTEP -> {
+                StepMessage stepMessage = algorithm.stepBack();
+                if (stepMessage != null) {
+                    actionController.deleteLastMessage();
+                    shapeController.paintEdgeDefault(stepMessage);
+                } else {
+                    actionController.blockPreviousStepButton();
+                    actionController.deleteLastMessage();
+                }
+            }
         }
     }
 }

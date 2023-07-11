@@ -26,6 +26,8 @@ public class ActionController {
     @FXML
     private Button nextStepButton;
     @FXML
+    private Button previousStepButton;
+    @FXML
     private Button removeEdgeButton;
     @FXML
     private Button removeNodeButton;
@@ -69,7 +71,7 @@ public class ActionController {
         fileChooser.setTitle("Open File");
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
-            mediator.sendRequest(new ActionMessage(State.UPLOADGRAPH, mainPane.getWidth(), mainPane.getHeight(),file.getAbsolutePath()));
+            mediator.sendRequest(new ActionMessage(State.UPLOADGRAPH, mainPane.getWidth(), mainPane.getHeight(), file.getAbsolutePath()));
             messageSender.appendText("Graph has been uploaded\n");
         }
     }
@@ -89,7 +91,18 @@ public class ActionController {
 
     @FXML
     protected void onNextStepButtonClick() {
+        if (previousStepButton.isDisable()) {
+            previousStepButton.setDisable(false);
+        }
         mediator.sendRequest(new ActionMessage(State.NEXTSTEP));
+    }
+
+    @FXML
+    protected void onPreviousStepButtonClick() {
+        if (nextStepButton.isDisable()) {
+            nextStepButton.setDisable(false);
+        }
+        mediator.sendRequest(new ActionMessage(State.PREVIOUSSTEP));
     }
 
     @FXML
@@ -99,7 +112,8 @@ public class ActionController {
         messageSender.clear();
         currentState.setText("Current state");
         currentState.setOpacity(0.5d);
-        mainPane.setOnMouseClicked(event -> {});
+        mainPane.setOnMouseClicked(event -> {
+        });
         mediator.sendRequest(new ActionMessage(State.RESTART));
     }
 
@@ -207,7 +221,20 @@ public class ActionController {
         alert.setTitle("Text field");
         alert.setHeaderText("Введите вес ребра");
         TextField inputField = new TextField();
-        inputField.setMaxWidth(Double.MAX_VALUE);
+        inputField.setPrefWidth(Integer.toString(Integer.MAX_VALUE).length());
+        inputField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.startsWith("0") || !newValue.matches("\\d*") || newValue.equals("") ||
+                    Integer.toString(Integer.MAX_VALUE).length() < newValue.length() ||
+                    Double.parseDouble(newValue) > Integer.MAX_VALUE ) {
+                inputField.setStyle("-fx-border-color: red");
+                Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setDisable(true);
+            } else {
+                inputField.setStyle("-fx-border-color: blue");
+                Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setDisable(false);
+            }
+        });
         VBox vBox = new VBox();
         vBox.getChildren().addAll(inputField);
         alert.getDialogPane().setContent(vBox);
@@ -226,5 +253,17 @@ public class ActionController {
                 nextStepButton.setDisable(true);
             }
         }
+    }
+
+    public void deleteLastMessage() {
+        String[] sentences = messageSender.getText().split("\n");
+        if (sentences.length > 0) {
+            sentences[sentences.length - 1] = "";
+        }
+        messageSender.setText(String.join("\n", sentences));
+    }
+
+    public void blockPreviousStepButton() {
+        previousStepButton.setDisable(true);
     }
 }
