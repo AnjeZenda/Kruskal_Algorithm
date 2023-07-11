@@ -6,10 +6,10 @@ public class StepMessage {
     private final int firstNodeId;
     private final int secondNodeId;
     private final int edgeId;
-    private final int previousTreeWeight;
+    private final int weightShift;
 
-    public StepMessage(EdgeData edgeData, StepMessageType messageType, int previousTreeWeight){
-        this.previousTreeWeight = previousTreeWeight;
+    public StepMessage(EdgeData edgeData, StepMessageType messageType, int weightShift){
+        this.weightShift = weightShift;
         this.messageType = messageType;
         firstNodeId = edgeData.getFirstNodeId();
         secondNodeId = edgeData.getSecondNodeId();
@@ -21,7 +21,7 @@ public class StepMessage {
         firstNodeId = -1;
         secondNodeId = -1;
         edgeId = -1;
-        previousTreeWeight = -1;
+        weightShift = -1;
     }
 
     public StepMessageType getType(){
@@ -40,7 +40,7 @@ public class StepMessage {
         return secondNodeId;
     }
 
-    int getPreviousTreeWeight(){
-        return previousTreeWeight;
+    int getWeightShift(){
+        return weightShift;
     }
 }
